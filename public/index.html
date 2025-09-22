@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Quiz Player</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="card" id="joinBox">
+  <h2>Join Quiz</h2>
+  <input id="nick" placeholder="Nickname" />
+  <input id="code" placeholder="Room code" />
+  <button id="joinBtn">Join</button>
+  <p id="msg"></p>
+</div>
+
+<div class="card hidden" id="lobby">
+  <h2>Waiting room</h2>
+  <div id="players"></div>
+  <div id="questionBox" class="hidden">
+    <h3 id="qPrompt"></h3>
+    <div id="choices"></div>
+    <p id="timer"></p>
+  </div>
+  <div id="result"></div>
+  <div id="scoreboard"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

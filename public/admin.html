@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Quiz Admin</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  .hidden { display: none; }
+  table { border-collapse: collapse; margin-top: 10px; }
+  td, th { border: 1px solid #666; padding: 6px 12px; }
+</style>
+</head>
+<body>
+  <h2>Admin Panel</h2>
+
+  <label for="level">Pilih Level:</label>
+  <select id="level">
+    <option value="">-- pilih level --</option>
+    <option value="1">Level 1</option>
+    <option value="2">Level 2</option>
+    <option value="3">Level 3</option>
+    <!-- tambahin sampai 12 -->
+  </select>
+  <button id="createBtn">Create Room</button>
+
+  <p>Room code: <span id="roomCode">-</span></p>
+  
+  <div id="players"></div>
+  
+  <div id="controls" class="hidden">
+    <button id="startBtn">Start Game</button>
+    <button id="endBtn">End Game</button>
+  </div>
+  
+  <div id="log"></div>
+  <div id="summary"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+let roomCode = null;
+
+// Buat room
+document.getElementById("createBtn").addEventListener("click", () => {
+  const level = document.getElementById("level").value;
+  if (!level) {
+    alert("Silakan pilih level dulu!");
+    return;
+  }
+  socket.emit("createRoom", { level }, (res) => {
+    if (res.ok) {
+      console.log("Room created:", res.code);
+    } else {
+      alert("Gagal buat room: " + res.error);
+    }
+  });
+});
+
+// Saat room berhasil dibuat
+socket.on('roomCreated', code => {
+  roomCode = code;
+  document.getElementById('roomCode').innerText = code;
+  document.getElementById('controls').classList.remove('hidden');
+});
+
+// Update daftar pemain
+socket.on('players', list => {
+  const el = document.getElementById('players');
+  el.innerHTML = '<h3>Players</h3>' + list.map(p=>`<div>${p.nick} — ${p.score}</div>`).join('');
+});
+
+// Start Game
+document.getElementById('startBtn').onclick = ()=> {
+  if (!roomCode) return;
+  socket.emit('startGame', {code: roomCode});
+};
+
+// End Game
+document.getElementById("endBtn").onclick = () => {
+  if (!roomCode) return;
+  socket.emit("endGame", { code: roomCode }, res => {
+    if (!res.ok) {
+      alert("Gagal end game: " + (res.error || ""));
+    }
+  });
+};
+
+// Notifikasi game mulai
+socket.on('gameStarted', ()=> {
+  document.getElementById('log').innerText = 'Game started';
+});
+
+// Tampilkan soal (log aja)
+socket.on('question', q => {
+  document.getElementById('log').innerText = `Question ${q.index+1}: ${q.prompt}`;
+});
+
+// Saat game selesai → tampilkan summary (hanya admin)
+socket.on("gameEnded", data => {
+  const summaryDiv = document.getElementById("summary");
+  summaryDiv.innerHTML = "<h2>Game Summary</h2>";
+
+  data.scores.forEach(p => {
+    summaryDiv.innerHTML += `
+      <h3>${p.nick} (✅ ${p.correct} | ❌ ${p.wrong})</h3>
+      <ul>
+        ${p.answers.map(a => `
+          <li>
+            Soal ${a.number}: ${a.question}<br>
+            Jawaban: ${a.choice} ${a.isCorrect ? "✅" : "❌"}<br>
+            Kunci: ${a.correctAnswer}
+          </li>
+        `).join("")}
+      </ul>
+    `;
+  });
+});
+</script>
+</body>
+</html>
