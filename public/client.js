@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io("https://quiz-be-7m6u.onrender.com");
 const joinBox = document.getElementById('joinBox');
 const lobby = document.getElementById('lobby');
 const joinBtn = document.getElementById('joinBtn');
