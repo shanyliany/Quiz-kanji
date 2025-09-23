@@ -1,3 +1,4 @@
+<script src="https://quiz-be-7m6u.onrender.com/socket.io/socket.io.js"></script>
 const socket = io("https://quiz-be-7m6u.onrender.com");
 const joinBox = document.getElementById('joinBox');
 const lobby = document.getElementById('lobby');
