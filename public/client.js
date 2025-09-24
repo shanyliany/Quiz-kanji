@@ -17,6 +17,7 @@ let myCode = null;
 let myNick = null;
 let answered = false;
 let timerInterval = null;
+let myAnswers = [];
 
 joinBtn.onclick = ()=> {
   const nick = nickIn.value.trim();
@@ -36,7 +37,7 @@ socket.on('players', list => {
 });
 
 socket.on('gameStarted', ()=> {
-  resultDiv.innerText = '';
+  resultDiv.innerHTML = '';
   questionBox.classList.remove('hidden');
 });
 
@@ -51,7 +52,7 @@ socket.on('question', q => {
       if(answered) return;
       answered = true;
       socket.emit('answer', {code: myCode, choice: idx});
-      resultDiv.innerText = 'Answer submitted...';
+      resultDiv.innerHTML = 'Answer submitted...';
     };
     choicesDiv.appendChild(b);
   });
@@ -66,22 +67,55 @@ socket.on('question', q => {
   }, 500);
 });
 
-// socket.on('answerResult', r => {
-//   resultDiv.innerText = r.correct ? 'Correct!' : 'Wrong. Correct choice index: ' + r.correctAnswer;
-// });
-
 socket.on('revealAnswer', r => {
   resultDiv.innerText = 'Answer: ' + r.correctAnswer;
+  clearInterval(timerInterval);   // ✅ stop timer ketika jawaban sudah di-reveal
 });
 
 socket.on('gameEnded', data => {
   questionBox.classList.add('hidden');
   let me = data.scores.find(s => s.nick === myNick);
+
   if (me) {
-    resultDiv.innerHTML = `<h3>Game Over</h3>
+    let answerSummary = myAnswers.map(a => `
+      <div>
+        <p><b>Soal ${a.number}:</b> ${a.question}</p>
+        <p>Jawaban kamu: ${a.choice}</p>
+        <p>Jawaban benar: ${a.correctAnswer}</p>
+        <p>${a.isCorrect ? '✅ Benar' : '❌ Salah'}</p>
+      </div>
+    `).join('');
+
+    resultDiv.innerHTML = `
+      <h3>Game Over</h3>
       <p>Total Benar: ${me.correct}</p>
-      <p>Total Salah: ${me.wrong}</p>`;
+      <p>Total Salah: ${me.wrong}</p>
+      <hr>
+      <h4>Ringkasan Jawaban Kamu:</h4>
+      ${answerSummary}
+    `;
   } else {
     resultDiv.innerHTML = '<h3>Game Over</h3><p>Data tidak ditemukan.</p>';
   }
 });
+
+
+socket.on('myAnswerResult', data => {
+  // Simpan ke myAnswers untuk ringkasan di akhir
+  myAnswers.push({
+    number: data.number,
+    question: data.question,
+    choice: data.choice,
+    correctAnswer: data.correctAnswer,
+    isCorrect: data.isCorrect
+  });
+
+  resultDiv.innerHTML = `
+    <p>Soal ${data.number}: ${data.question}</p>
+    <p>Jawaban kamu: ${data.choice}</p>
+    <p>Jawaban benar: ${data.correctAnswer}</p>
+    <p>${data.isCorrect ? '✅ Benar' : '❌ Salah'}</p>
+  `;
+});
+
+

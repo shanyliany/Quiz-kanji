@@ -29,7 +29,7 @@
   
   <div id="controls" class="hidden">
     <button id="startBtn">Start Game</button>
-    <button id="endBtn">End Game</button>
+    <!-- <button id="endBtn">End Game</button> -->
   </div>
   
   <div id="log"></div>
@@ -49,19 +49,22 @@ document.getElementById("createBtn").addEventListener("click", () => {
   }
   socket.emit("createRoom", { level }, (res) => {
     if (res.ok) {
-      console.log("Room created:", res.code);
+      roomCode = res.code;   // ✅ SIMPAN ROOMCODE DI SINI
+      document.getElementById('roomCode').innerText = roomCode;
+      document.getElementById('controls').classList.remove('hidden');
     } else {
       alert("Gagal buat room: " + res.error);
     }
   });
 });
 
-// Saat room berhasil dibuat
-socket.on('roomCreated', code => {
-  roomCode = code;
-  document.getElementById('roomCode').innerText = code;
-  document.getElementById('controls').classList.remove('hidden');
-});
+
+// // Saat room berhasil dibuat
+// socket.on('roomCreated', code => {
+//   roomCode = code;
+//   document.getElementById('roomCode').innerText = code;
+//   document.getElementById('controls').classList.remove('hidden');
+// });
 
 // Update daftar pemain
 socket.on('players', list => {
@@ -75,15 +78,15 @@ document.getElementById('startBtn').onclick = ()=> {
   socket.emit('startGame', {code: roomCode});
 };
 
-// End Game
-document.getElementById("endBtn").onclick = () => {
-  if (!roomCode) return;
-  socket.emit("endGame", { code: roomCode }, res => {
-    if (!res.ok) {
-      alert("Gagal end game: " + (res.error || ""));
-    }
-  });
-};
+// // End Game
+// document.getElementById("endBtn").onclick = () => {
+//   if (!roomCode) return;
+//   socket.emit("endGame", { code: roomCode }, res => {
+//     if (!res.ok) {
+//       alert("Gagal end game: " + (res.error || ""));
+//     }
+//   });
+// };
 
 // Notifikasi game mulai
 socket.on('gameStarted', ()=> {
