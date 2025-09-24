@@ -99,7 +99,6 @@ socket.on('gameEnded', data => {
   }
 });
 
-
 socket.on('myAnswerResult', data => {
   // Simpan ke myAnswers untuk ringkasan di akhir
   myAnswers.push({
@@ -117,5 +116,4 @@ socket.on('myAnswerResult', data => {
     <p>${data.isCorrect ? '✅ Benar' : '❌ Salah'}</p>
   `;
 });
-
 
