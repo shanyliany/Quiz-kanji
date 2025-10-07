@@ -19,7 +19,15 @@
     <option value="1">Level 1</option>
     <option value="2">Level 2</option>
     <option value="3">Level 3</option>
-    <!-- tambahin sampai 12 -->
+    <option value="3">Level 4</option>
+    <option value="3">Level 5</option>
+    <option value="3">Level 6</option>
+    <option value="3">Level 7</option>
+    <option value="3">Level 8</option>
+    <option value="3">Level 9</option>
+    <option value="3">Level 10</option>
+    <option value="3">Level 11</option>
+    <option value="3">Level 12</option>
   </select>
   <button id="createBtn">Create Room</button>
 
@@ -109,7 +117,7 @@ socket.on("gameEnded", data => {
       <ul>
         ${p.answers.map(a => `
           <li>
-            Soal ${a.number}: ${a.question}<br>
+            Soal ${a.number}: ${a.question} (${a.reading}) <br>
             Jawaban: ${a.choice} ${a.isCorrect ? "✅" : "❌"}<br>
             Kunci: ${a.correctAnswer}
           </li>

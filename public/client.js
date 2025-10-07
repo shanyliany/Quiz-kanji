@@ -79,7 +79,7 @@ socket.on('gameEnded', data => {
   if (me) {
     let answerSummary = myAnswers.map(a => `
       <div>
-        <p><b>Soal ${a.number}:</b> ${a.question}</p>
+        <p><b>Soal ${a.number}:</b> ${a.question} (${a.reading})</p>
         <p>Jawaban kamu: ${a.choice}</p>
         <p>Jawaban benar: ${a.correctAnswer}</p>
         <p>${a.isCorrect ? '✅ Benar' : '❌ Salah'}</p>
@@ -105,13 +105,14 @@ socket.on('myAnswerResult', data => {
   myAnswers.push({
     number: data.number,
     question: data.question,
+    reading: data.reading,
     choice: data.choice,
     correctAnswer: data.correctAnswer,
     isCorrect: data.isCorrect
   });
 
   resultDiv.innerHTML = `
-    <p>Soal ${data.number}: ${data.question}</p>
+    <p>Soal ${data.number}: ${data.question} (${data.reading}) </p>
     <p>Jawaban kamu: ${data.choice}</p>
     <p>Jawaban benar: ${data.correctAnswer}</p>
     <p>${data.isCorrect ? '✅ Benar' : '❌ Salah'}</p>
