@@ -19,7 +19,15 @@
     <option value="1">Level 1</option>
     <option value="2">Level 2</option>
     <option value="3">Level 3</option>
-    <!-- tambahin sampai 12 -->
+    <option value="3">Level 4</option>
+    <option value="3">Level 5</option>
+    <option value="3">Level 6</option>
+    <option value="3">Level 7</option>
+    <option value="3">Level 8</option>
+    <option value="3">Level 9</option>
+    <option value="3">Level 10</option>
+    <option value="3">Level 11</option>
+    <option value="3">Level 12</option>
   </select>
   <button id="createBtn">Create Room</button>
 
@@ -29,7 +37,6 @@
   
   <div id="controls" class="hidden">
     <button id="startBtn">Start Game</button>
-    <!-- <button id="endBtn">End Game</button> -->
   </div>
   
   <div id="log"></div>
@@ -59,13 +66,6 @@ document.getElementById("createBtn").addEventListener("click", () => {
 });
 
 
-// // Saat room berhasil dibuat
-// socket.on('roomCreated', code => {
-//   roomCode = code;
-//   document.getElementById('roomCode').innerText = code;
-//   document.getElementById('controls').classList.remove('hidden');
-// });
-
 // Update daftar pemain
 socket.on('players', list => {
   const el = document.getElementById('players');
@@ -78,15 +78,6 @@ document.getElementById('startBtn').onclick = ()=> {
   socket.emit('startGame', {code: roomCode});
 };
 
-// // End Game
-// document.getElementById("endBtn").onclick = () => {
-//   if (!roomCode) return;
-//   socket.emit("endGame", { code: roomCode }, res => {
-//     if (!res.ok) {
-//       alert("Gagal end game: " + (res.error || ""));
-//     }
-//   });
-// };
 
 // Notifikasi game mulai
 socket.on('gameStarted', ()=> {
@@ -109,7 +100,7 @@ socket.on("gameEnded", data => {
       <ul>
         ${p.answers.map(a => `
           <li>
-            Soal ${a.number}: ${a.question}<br>
+            Soal ${a.number}: ${a.question} (${a.reading}) <br>
             Jawaban: ${a.choice} ${a.isCorrect ? "✅" : "❌"}<br>
             Kunci: ${a.correctAnswer}
           </li>
