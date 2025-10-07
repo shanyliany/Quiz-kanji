@@ -37,7 +37,6 @@
   
   <div id="controls" class="hidden">
     <button id="startBtn">Start Game</button>
-    <!-- <button id="endBtn">End Game</button> -->
   </div>
   
   <div id="log"></div>
@@ -67,13 +66,6 @@ document.getElementById("createBtn").addEventListener("click", () => {
 });
 
 
-// // Saat room berhasil dibuat
-// socket.on('roomCreated', code => {
-//   roomCode = code;
-//   document.getElementById('roomCode').innerText = code;
-//   document.getElementById('controls').classList.remove('hidden');
-// });
-
 // Update daftar pemain
 socket.on('players', list => {
   const el = document.getElementById('players');
@@ -86,15 +78,6 @@ document.getElementById('startBtn').onclick = ()=> {
   socket.emit('startGame', {code: roomCode});
 };
 
-// // End Game
-// document.getElementById("endBtn").onclick = () => {
-//   if (!roomCode) return;
-//   socket.emit("endGame", { code: roomCode }, res => {
-//     if (!res.ok) {
-//       alert("Gagal end game: " + (res.error || ""));
-//     }
-//   });
-// };
 
 // Notifikasi game mulai
 socket.on('gameStarted', ()=> {
