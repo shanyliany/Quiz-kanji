@@ -57,7 +57,7 @@ socket.on('question', q => {
     choicesDiv.appendChild(b);
   });
   // timer
-  let t = q.time || 45;
+  let t = q.time || 60;
   timerP.innerText = 'Time: ' + t;
   clearInterval(timerInterval);
   timerInterval = setInterval(()=> {
